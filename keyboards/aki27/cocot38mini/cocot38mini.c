@@ -40,7 +40,7 @@ extern const pointing_device_driver_t pointing_device_driver;
 #endif
 
 #ifndef COCOT_SCROLL_DIVIDERS
-#    define COCOT_SCROLL_DIVIDERS { 1, 2, 3, 4, 5, 6 }
+#    define COCOT_SCROLL_DIVIDERS { 1, 2, 3, 4, 5, 6, 8, 10 }
 #    ifndef COCOT_SCROLL_DIV_DEFAULT
 #       define COCOT_SCROLL_DIV_DEFAULT 4
 #    endif
@@ -181,7 +181,7 @@ report_mouse_t pointing_device_task_kb(report_mouse_t mouse_report) {
 
 bool process_record_kb(uint16_t keycode, keyrecord_t* record) {
     // xprintf("KL: kc: %u, col: %u, row: %u, pressed: %u\n", keycode, record->event.key.col, record->event.key.row, record->event.pressed);
-    
+
     if (!process_record_user(keycode, record)) return false;
 
     switch (keycode) {
@@ -203,7 +203,7 @@ bool process_record_kb(uint16_t keycode, keyrecord_t* record) {
                 set_auto_mouse_enable(cocot_config.auto_mouse);
                 //auto_mouse_tg_off = !get_auto_mouse_enable();
             } // do nothing on key up
-            return false; // prevent further processing of keycode            
+            return false; // prevent further processing of keycode
     //*/
     }
 
@@ -217,7 +217,7 @@ bool process_record_kb(uint16_t keycode, keyrecord_t* record) {
         cocot_config.scrl_div = (cocot_config.scrl_div + 1) % SCRL_DIV_SIZE;
         eeconfig_update_kb(cocot_config.raw);
     }
-    
+
     if (keycode == ROT_R15 && record->event.pressed) {
         cocot_config.rotation_angle = (cocot_config.rotation_angle + 1) % ANGLE_SIZE;
         eeconfig_update_kb(cocot_config.raw);
@@ -261,14 +261,14 @@ layer_state_t layer_state_set_kb(layer_state_t state) {
         default:
             //rgblight_sethsv_range(HSV_RED, 0, 9);
             cocot_set_scroll_mode(false);
-            
+
             if (cocot_config.auto_mouse) {
                 set_auto_mouse_enable(true);
             } else {
                 //state = remove_auto_mouse_layer(state, false);
                 set_auto_mouse_enable(false);
             }
-            
+
             //set_auto_mouse_enable(true);
             //state = remove_auto_mouse_layer(state, false);
             //set_auto_mouse_enable(cocot_config.auto_mouse);
@@ -311,4 +311,3 @@ bool cocot_get_scroll_mode(void) {
 void cocot_set_scroll_mode(bool mode) {
     cocot_config.scrl_mode = mode;
 }
-
