@@ -107,17 +107,6 @@ report_mouse_t pointing_device_task_kb(report_mouse_t mouse_report) {
     prev_x = smoothed_x;
     prev_y = smoothed_y;
 
-    // Calculate the magnitude of movement
-    float movement_magnitude = sqrt(smoothed_x * smoothed_x + smoothed_y * smoothed_y);
-
-    // Dynamic multiplier: slower for small movements, faster for large
-    float dynamic_multiplier = 1.0 + movement_magnitude / 10.0; // Adjust divisor for desired scaling
-    dynamic_multiplier = fmin(fmax(dynamic_multiplier, 0.5), 3.0); // Clamp between 0.5 and 3.0
-
-    // Apply dynamic multiplier to smoothed values
-    smoothed_x *= sensitivity_multiplier * dynamic_multiplier;
-    smoothed_y *= sensitivity_multiplier * dynamic_multiplier;
-
     // Scroll mode handling
     if (cocot_get_scroll_mode()) {
         static int h_acm = 0, v_acm = 0;
@@ -156,6 +145,17 @@ report_mouse_t pointing_device_task_kb(report_mouse_t mouse_report) {
         mouse_report.x = 0;
         mouse_report.y = 0;
     } else {
+        // Calculate the magnitude of movement
+        float movement_magnitude = sqrt(smoothed_x * smoothed_x + smoothed_y * smoothed_y);
+
+        // Dynamic multiplier: slower for small movements, faster for large
+        float dynamic_multiplier = 1.0 + movement_magnitude / 10.0; // Adjust divisor for desired scaling
+        dynamic_multiplier = fmin(fmax(dynamic_multiplier, 0.5), 3.0); // Clamp between 0.5 and 3.0
+
+        // Apply dynamic multiplier to smoothed values
+        smoothed_x *= sensitivity_multiplier * dynamic_multiplier;
+        smoothed_y *= sensitivity_multiplier * dynamic_multiplier;
+
         // Movement smoothing and accumulation for normal mode
         x_accumulator += smoothed_x * sensitivity;
         y_accumulator += smoothed_y * sensitivity;
